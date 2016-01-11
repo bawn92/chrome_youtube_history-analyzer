@@ -7,7 +7,8 @@ var time_watched = "00:00";
 
 // Regex for YouTube links and YouTube IDs
 var hrefLink = new RegExp("href=\"/watch\\?v=.[^\"]{0,40}");
-var channel;
+var channelLink = new RegExp("href=\"/user/.[^\"]{1,40}");
+var channelName = new RegExp("\">.{1,150}</a>");
 var titleName = new RegExp("title=\".[^\"]{0,}");// Checks for links like https://www.youtube.com/embed/0B0112bvG1s
 var duration = new RegExp("- Duration: [0-9]{0,3}:{0,1}[0-9]{0,2}:{0,1}[0-9]{0,2}.");
 
@@ -41,6 +42,8 @@ function clickPlanet() {
 
 function doSearch(searchString, details)
 {
+
+		//search for title name, link and video length
 		while(searchString.match('<h3.{100,}</h3>')[0]){
 
 				var h3tagPostion = searchString.search('<h3.{100,}</h3>');
@@ -56,51 +59,29 @@ function doSearch(searchString, details)
 					count2 = count2+1;
 				}
 
-				searchString = searchString.substring(h3tagPostion+h3tag.length,searchString.length);
+					//search for div tag containing channel link and name
+					var channeldetailsPostion = searchString.search('<div class="yt-lockup-byline">.{0,}</div>');
+					var channeldetails = searchString.match('<div class="yt-lockup-byline">.{0,}</div>')[0];
+					if(channeldetails != null){
+
+						//alert(cleanChannelLink(channeldetails.match(channelLink)));
+						alert(cleanChannelName(channeldetails.match(channelName)[0]));
+
+					}
+
+
+				searchString = searchString.substring(channeldetailsPostion+channeldetails.length,searchString.length);
 				if(!searchString.match('<h3.{100,}</h3>')){
 					console.log("in break");
 					break;
 				}
 		}
+
+
+
 		console.log("exit");
 		alert(" Number Of videos watched: "+count+" Hours watched: "+time_watched);
-		//var h3tagPostion = searchString.search('<h3.{100,}</h3>');
-		//var h3tag = searchString.match('<h3.{100,}</h3>')[0];
 
-
-
-
-		//alert(h3tag+" length:"+h3tag.length+" postion:"+h3tagPostion+" total:"+searchString.length);
-		//verify page has h3 tags
-		/*if(h3tag)
-		{
-
-
-				count= count+1;
-				//alert('inside');
-
-				//verify h3 tags contain information we need to extract
-				//if(h3tag.search(titleName) != -1 && h3tag.search(hrefLink) != -1 && h3tag.search(duration) != -1){
-					//alert(h3tag.match(hrefLink));
-					//alert(h3tag.match(titleName));
-					//alert(h3tag.match(duration));
-				//}
-
-				/*
-
-				if(){
-
-					alert(h3tag.substring(h3tag.search(hrefLink),h3tag.search(hrefLink)+100))
-				}
-
-				if(){
-
-					alert(h3tag.substring(h3tag.search(hrefLink),h3tag.search(hrefLink)+100))
-				}
-				var newSearchString = searchString.substring(h3tagPostion+h3tag.length,searchString.length);
-				doSearch(newSearchString,'');
-		}
-		*/
 }
 
 
@@ -130,5 +111,11 @@ function cleanDuration(duration)
 
 		console.log(duration);
 		return duration;
+
+}
+
+function cleanChannelName(name)
+{
+		return name.substring(2,name.length-4);
 
 }
