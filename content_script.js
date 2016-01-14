@@ -8,7 +8,7 @@ var videos_map ={};
 
 // Regex for YouTube links and YouTube IDs
 var hrefLink = new RegExp("href=\"/watch\\?v=.[^\"]{0,40}");
-var channelLink = new RegExp("href=\"/user/.[^\"]{1,40}");
+var channelLink = new RegExp("href=\"/\(user\|channel\)/.[^\"]{1,40}");
 var channelName = new RegExp("\">.{1,150}</a>");
 var titleName = new RegExp("title=\".[^\"]{0,}");// Checks for links like https://www.youtube.com/embed/0B0112bvG1s
 var duration = new RegExp("- Duration: [0-9]{0,3}:{0,1}[0-9]{0,2}:{0,1}[0-9]{0,2}.");
@@ -55,8 +55,8 @@ function doSearch(searchString, details)
 
 				var h3tagPostion = searchString.search('<h3.{100,}</h3>');
 				var h3tag = searchString.match('<h3.{100,}</h3>')[0];
-				var channelName;
-				var channelLink;
+				var channel_Name;
+				var channel_Link;
 				var videoUrl;
 				var videoDuration;
 				var video_title;
@@ -78,11 +78,11 @@ function doSearch(searchString, details)
 					var channeldetails = searchString.match('<div class="yt-lockup-byline">.{0,}</div>')[0];
 					if(channeldetails != null){
 
-						channelLink = channeldetails.match(channelLink)[0];
-						channelName = cleanChannelName(channeldetails.match(channelName)[0]);
+						channel_Link = channeldetails.match(channelLink)[0];
+						channel_Name = cleanChannelName(channeldetails.match(channelName)[0]);
 					}
 
-					addVideo(videoUrl,channelLink,videoDuration,video_title);
+					addVideo(videoUrl,channel_Link,videoDuration,video_title);
 					//verifyFirst50Videos();
 
 				searchString = searchString.substring(channeldetailsPostion+channeldetails.length,searchString.length);
@@ -92,35 +92,46 @@ function doSearch(searchString, details)
 				}
 		}
 
-
+		find_most_viewed_channels();
 
 		console.log("exit");
 		console.log(Object.size(videos_map));
+		console.log(videos_map);
 		alert(" Number Of videos watched: "+count+" Hours watched: "+time_watched);
 
 }
 
 
-function addVideo(videoUrl,channelLink,videoDuration,video_title)
+function addVideo(videoUrl,channel_Link,videoDuration,video_title)
 {
 
-	console.log(channelLink);
+	console.log(channel_Link);
 	console.log(videoUrl);
-	 if(!(channelLink in videos_map)){
+	 if(!(channel_Link in videos_map)){
 		 chan_map = [{videoUrl:{"Length":videoDuration, "Title":video_title}}];
-		 videos_map[channelLink] = chan_map;
-		 videos_map.channelLink = chan_map;
-		console.log(videos_map);
+		 videos_map[channel_Link] = chan_map;
+		 //videos_map.channel_Link = chan_map;
+		 console.log(videos_map);
 	 }else{
-		 chan_vids = videos_map[channelLink];
-		 console.log(chan_vids.type);
-		 var video = {"Length":videoDuration, "Title":video_title};
-		 chan_vids.push({videoUrl:video});
-		 videos_map[channelLink] = chan_vids.push({videoUrl:video});
+		 chan_vids = videos_map[channel_Link];
+		 console.log(chan_vids);
+		 chan_vids.push({videoUrl:{"Length":videoDuration, "Title":video_title}});
+		 console.log(chan_vids);
+		 videos_map[channel_Link] = chan_vids;
 	 }
 
 
 
+}
+
+function find_most_viewed_channels()
+{
+		var sortable = [];
+		for(var video in videos_map)
+			sortable.push([video,videos_map[video].length]);
+		sortable.sort(function(a,b) {return b[1] - a[1]})
+		console.log("sortable");
+		console.log(sortable);
 }
 
 
