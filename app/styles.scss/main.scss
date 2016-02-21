@@ -1,4 +1,197 @@
 $padding: 20px;
 body {
   padding: $padding;
+
+
+  hr {
+  border:none;
+  height: 20px;
+ 	width: 90%;
+	height: 50px;
+	margin-top: 0;
+	border-bottom: 1px solid #1f1209;
+	box-shadow: 0 20px 20px -20px #333;
+  margin: -50px auto 10px;
+}
+
+img.logo{
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+
+  }
+
+.btn {
+
+  border-radius: 5px;
+  padding: 15px 50px;
+  font-size: 22px;
+  text-decoration: none;
+  margin: 75px;
+  display: inline;
+
+  color: #fff;
+  position: relative;
+  display: inline-block;
+}
+
+.btn:active {
+  transform: translate(0px, 5px);
+  -webkit-transform: translate(0px, 5px);
+  box-shadow: 0px 1px 0px 0px;
+}
+
+.red {
+background-color: #e62f27;
+box-shadow: 0px 5px 0px 0px #CE3323;
+
+}
+
+.red:hover {
+background-color: #FF6656;
+}
+
+
+}
+
+
+$time: 2s;
+$delay: 0.1s;
+
+@mixin animation($name){
+    @-webkit-keyframes #{$name}{
+        @content;
+    }
+    @-moz-keyframes #{$name}{
+        @content;
+    }
+    @-o-keyframes #{$name}{
+        @content;
+    }
+    @keyframes #{$name}{
+        @content;
+    }
+}
+
+@mixin spin($deg){
+     -ms-transform: rotate($deg);
+     -webkit-transform: rotate($deg);
+      transform: rotate($deg);
+}
+
+@include animation(full-spin){
+  100%{
+    @include spin(360deg);
+  }
+}
+
+@include animation(quick-full-spin){
+  30%,100%{
+    @include spin(360deg);
+  }
+}
+
+@include animation(quick-half-spin){
+  30%,100%{
+    @include spin(180deg);
+  }
+}
+
+@include animation(quick-full-reverse-spin){
+  30%,100%{
+    @include spin(-360deg);
+  }
+}
+
+@include animation(half-spin){
+  100%{
+    @include spin(180deg);
+  }
+}
+
+
+body{
+  margin: 0;
+  overflow: hidden;
+  min-width:300px;
+  min-height: 300px;
+
+  svg{
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    margin-left: -238px;
+    margin-top: -160px;
+
+    path{
+         transform-origin: center;
+         fill: D91E18;
+    }
+
+    @for $i from 1 through 8{
+       #one > path:nth-child(#{$i}){
+        -webkit-animation: quick-full-spin $time infinite;
+        -moz-animation: quick-full-spin $time infinite;
+        -o-animation: quick-full-spin $time infinite;
+         animation: quick-full-spin $time infinite;
+        -webkit-animation-delay: $i*$delay;
+         animation-delay: $i*$delay;
+        -webkit-animation-timing-function: cubic-bezier(0.25,0.8,0.45,1);
+         animation-timing-function: cubic-bezier(0.25,0.8,0.45,1);
+      }
+    }
+
+    @for $i from 1 through 8{
+       #two > path:nth-child(#{$i}){
+        -webkit-animation: full-spin $time infinite;
+        -moz-animation: full-spin $time infinite;
+        -o-animation: full-spin $time infinite;
+         animation: full-spin $time infinite;
+        -webkit-animation-timing-function: linear;
+         animation-timing-function: linear;
+      }
+    }
+
+     @for $i from 1 through 8{
+       #three > path:nth-child(#{$i}){
+        -webkit-animation: full-spin $time infinite;
+        -moz-animation: full-spin $time infinite;
+        -o-animation: full-spin $time infinite;
+         animation: full-spin $time infinite;
+      }
+    }
+
+   @for $i from 1 through 8{
+       #four > path:nth-child(#{$i}){
+        -webkit-animation: quick-full-reverse-spin $time infinite;
+        -moz-animation: quick-full-reverse-spin $time infinite;
+        -o-animation: quick-full-reverse-spin $time infinite;
+         animation: quick-full-reverse-spin $time infinite;
+        -webkit-animation-delay: $i*$delay;
+         animation-delay: $i*$delay;
+        -webkit-animation-timing-function: cubic-bezier(0.25,0.8,0.45,1);
+         animation-timing-function: cubic-bezier(0.25,0.8,0.45,1);
+      }
+    }
+
+   @for $i from 1 through 8{
+       #five > path:nth-child(#{$i}){
+        -webkit-animation: quick-half-spin $time infinite;
+        -moz-animation: quick-half-spin $time infinite;
+        -o-animation: quick-half-spin $time infinite;
+         animation: quick-half-spin $time infinite;
+        -webkit-animation-delay: $i*$delay;
+         animation-delay: $i*$delay;
+      }
+    }
+
+    @for $i from 1 through 8{
+       #six > path:nth-child(#{$i}){
+        -webkit-animation: half-spin $time/2 infinite;
+        -moz-animation: half-spin $time/2 infinite;
+        -o-animation: half-spin $time/2 infinite;
+         animation: half-spin $time/2 infinite;
+      }
+    }
+  }
 }

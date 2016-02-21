@@ -1,46 +1,29 @@
-
-
-console.log('\'Allo \'Allo! Event Page for Browser Action');
-
-/*
-chrome.runtime.onMessage.addListener(function (msg, sender) {
-  // First, validate the message's structure
-  //alert(msg.map);
-  //alert(msg.subject);
-  /*if ((msg.from === 'content') && (msg.subject === 'videoMap')) {
-    // Collect the necessary data
-    // (For your specific requirements `document.querySelectorAll(...)`
-    //  should be equivalent to jquery's `$(...)`)
-    console.log(msg.map);
-
-    localStorage.setItem('videoMap',JSON.stringify(msg.map));
-
-  }
-  chrome.runtime.sendMessage({
-    from:    'content',
-    subject: 'videoMap',
-    map: videosMap
-  });
-
-
-  if ((msg.from === 'content') && (msg.subject === 'getLocalStorage')) {
-    alert('locastorgaes');
-    sendResponse(localStorage.getItem('videoMap'));
-
-  }
-
-}); */
-
 chrome.runtime.onConnect.addListener(function(port){
   console.assert(port.name === 'contentConv');
-
+  var currentState;
   port.onMessage.addListener(function(msg){
     if(msg.map === 'getLocalStorage'){
-      port.postMessage({answer: localStorage.getItem('videoMap')});
+      port.postMessage({answer: localStorage.getItem('videoMap'), details: localStorage.getItem('stats')});
 
     }else if ( msg.map === 'sendingVideoMap'){
-        alert('in backround saving data');
+        //alert('here');
         localStorage.setItem('videoMap',msg.values);
+        chrome.tabs.create({url: "index.html"});
+    }else if(msg.map === 'stats'){
+      localStorage.setItem('stats',msg.values);
+    }else if(msg.map === 'getLocalStorageStats'){
+      console.log(localStorage.getItem('stats'));
+      port.postMessage({answer: localStorage.getItem('stats')});
+    }else if(msg.map === 'currentState'){
+      if(localStorage.getItem('applicationState') !== null ){
+        currentState = localStorage.getItem('applicationState');
+      }else{
+        localStorage.setItem('applicationState','0');
+        currentState = '0';
+      }
+      port.postMessage({state: currentState});
+    }else if(msg.map === 'updateState'){
+      localStorage.setItem('applicationState',msg.values);
     }
   });
 });
